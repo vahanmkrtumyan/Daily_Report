@@ -8,21 +8,21 @@ app.use(bodyParser.json());
 
 const connectionString = "postgressql://postgres:1990@localhost:5432/postgres";
 
-const client = new Client({
-  connectionString: connectionString
-  // user: "postgres",
-  // password: "1990"
-  // host: "Vahan",
-  // port: 5432,
-  // database: "postgres"
-});
-
-// var client = new Client({
-//   host: "postgres.cheevgkmqkgg.us-east-2.rds.amazonaws.com",
-//   user: "postgres",
-//   password: "postgres",
-//   database: "postgres"
+// const client = new Client({
+//   connectionString: connectionString
+//   // user: "postgres",
+//   // password: "1990"
+//   // host: "Vahan",
+//   // port: 5432,
+//   // database: "postgres"
 // });
+
+var client = new Client({
+  host: "postgres.cheevgkmqkgg.us-east-2.rds.amazonaws.com",
+  user: "postgres",
+  password: "postgres",
+  database: "postgres"
+});
 
 client
   .connect()
