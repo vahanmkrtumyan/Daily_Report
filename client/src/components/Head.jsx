@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Header, Image, Menu, Dropdown } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 import "./layout.css";
 
 const Head = () => (
@@ -7,16 +8,22 @@ const Head = () => (
     <Menu fixed="top" inverted className="layout">
       <Container>
         <Menu.Item as="a" header>
-          <Image
+          {/* <Image
             size="mini"
             src="../../logo.svg"
             style={{ marginRight: "1.5em" }}
-          />
+          /> */}
           Daily Report
         </Menu.Item>
-        <Menu.Item as="a">Notifications</Menu.Item>
-        <Menu.Item as="a">Users</Menu.Item>
-        <Menu.Item as="a">Reports</Menu.Item>
+        <Menu.Item as="a">
+          <Link to="/notifications">Notifications</Link>{" "}
+        </Menu.Item>
+        <Menu.Item as="a">
+          <Link to="/users">Users</Link>
+        </Menu.Item>
+        <Menu.Item as="a">
+          <Link to="/reports">Reports</Link>
+        </Menu.Item>
 
         {/* <Dropdown item simple text="Dropdown">
           <Dropdown.Menu>

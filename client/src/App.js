@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Route, Switch } from "react-router-dom";
 import logo from "./logo.svg";
 import "./App.css";
 import Head from "./components/Head";
@@ -11,9 +12,12 @@ class App extends Component {
     return (
       <div className="App">
         <Head />
-        {/* <Login /> */}
-        <Users />
-        <Footer />
+        <Switch>
+          <Route path="/" component={Login} exact />
+          <Route path="/Users" component={Users} exact />
+          {/* <Login /> */}
+        </Switch>
+        {/* <Footer /> */}
       </div>
     );
   }
