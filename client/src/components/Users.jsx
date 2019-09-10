@@ -5,10 +5,21 @@ import UserInput from "./UserInput";
 
 const Users = () => {
   const [companies, SetCompanies] = useState([]);
-  const [company, setCompany] = useState("");
+  const [searchUser, setSearchUser] = useState("");
   const [column, setColumn] = useState(null);
   const [direction, setDirection] = useState(null);
   const [filter, setFilter] = useState("");
+
+  const users = [
+    {
+      id: 1,
+      First_Name: "Vahan",
+      Last_Name: "Mkrtumyan",
+      role: "admin",
+      password: "123456",
+      username: "vahan"
+    }
+  ];
 
   let handleSort = clickedColumn => () => {
     if (column !== clickedColumn) {
@@ -22,8 +33,10 @@ const Users = () => {
   };
 
   let filtered =
-    companies.filter(function(expense) {
-      return expense.name.toLowerCase().indexOf(company.toLowerCase()) !== -1;
+    users.filter(function(user) {
+      return (
+        user.First_Name.toLowerCase().indexOf(searchUser.toLowerCase()) !== -1
+      );
     }) || [];
 
   return (
@@ -56,7 +69,7 @@ const Users = () => {
                   textAlign="center"
                   sorted={column === "login" ? direction : null}
                 >
-                  <h3>Login</h3>
+                  <h3>Username</h3>
                 </Table.HeaderCell>
                 <Table.HeaderCell textAlign="center">
                   <h3>Password</h3>
@@ -74,31 +87,19 @@ const Users = () => {
             </Table.Header>
 
             <Table.Body>
-              {filtered.map(expense => (
-                <Table.Row key={expense.name} textAlign="right">
-                  <Table.Cell textAlign="center">{expense.name}</Table.Cell>
-                  <Table.Cell textAlign="center" className="mobile only">
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center"
-                      }}
-                    >
-                      {expense.login}{" "}
-                    </div>
+              {filtered.map(user => (
+                <Table.Row key={user.id} textAlign="right">
+                  <Table.Cell textAlign="center">{user.First_Name}</Table.Cell>
+                  <Table.Cell textAlign="center">{user.Last_Name}</Table.Cell>
+                  <Table.Cell textAlign="center">{user.username}</Table.Cell>
+                  <Table.Cell textAlign="center">{user.password}</Table.Cell>
+                  <Table.Cell textAlign="center">{user.role}</Table.Cell>
+                  <Table.Cell textAlign="center">
+                    
+                      <Icon name="edit outline" color="blue" />
+                    
                   </Table.Cell>
-                  <Table.Cell textAlign="center" className="mobile only">
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center"
-                      }}
-                    >
-                      {expense.password}{" "}
-                    </div>
-                  </Table.Cell>
+                  <Table.Cell textAlign="center"><Icon name="trash" color="red" /></Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>

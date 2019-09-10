@@ -17,6 +17,13 @@ const client = new Client({
   // database: "postgres"
 });
 
+// var client = new Client({
+//   host: "postgres.cheevgkmqkgg.us-east-2.rds.amazonaws.com",
+//   user: "postgres",
+//   password: "postgres",
+//   database: "postgres"
+// });
+
 client
   .connect()
   .then(() => console.log("Connected"))
