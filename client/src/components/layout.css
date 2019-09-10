@@ -1,0 +1,12 @@
+.layout {
+  background-color: #252839 !important;
+  height: 70px;
+}
+
+.layout ul {
+  margin: 0;
+}
+
+.center {
+  margin: auto !important;
+}
