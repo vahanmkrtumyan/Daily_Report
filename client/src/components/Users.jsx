@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Icon, Button, Table, Input, Container } from "semantic-ui-react";
 import _ from "lodash";
-import UserInput from "./UserInput";
+import UserInput from "./Modals/UserInput";
+import EditUser from "./Modals/EditUser";
 
 const Users = () => {
   const [companies, SetCompanies] = useState([]);
@@ -95,11 +96,11 @@ const Users = () => {
                   <Table.Cell textAlign="center">{user.password}</Table.Cell>
                   <Table.Cell textAlign="center">{user.role}</Table.Cell>
                   <Table.Cell textAlign="center">
-                    
-                      <Icon name="edit outline" color="blue" />
-                    
+                   <EditUser user={user}/>
                   </Table.Cell>
-                  <Table.Cell textAlign="center"><Icon name="trash" color="red" /></Table.Cell>
+                  <Table.Cell textAlign="center">
+                    <Icon name="trash" color="red" />
+                  </Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>

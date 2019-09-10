@@ -1,12 +1,22 @@
-import React, { useState } from "react";
-import { Button, Header, Image, Modal, Icon, Form } from "semantic-ui-react";
+import React, { useState, useEffect } from "react";
+import { Button, Modal, Icon, Form } from "semantic-ui-react";
 
-const UserInput = () => {
+const EditUser = ({ user }) => {
   let [firstName, setFirstname] = useState("");
   let [lastName, setLastname] = useState("");
   let [role, setRole] = useState("Developer");
   let [username, setUsername] = useState("");
   let [password, setPassword] = useState("");
+
+  useEffect(() => {
+    setFirstname(user.First_Name);
+    setRole(user.Last_Name);
+    setLastname(user.role);
+    setUsername(user.username);
+    setPassword(user.password);
+  }, [user]);
+
+  console.log(user);
 
   const options = [
     { key: "m", text: "PM", value: "PM" },
@@ -17,8 +27,7 @@ const UserInput = () => {
     <Modal
       trigger={
         <Button>
-          {" "}
-          Add user <Icon name="add user" style={{ margin: "auto" }} />
+          <Icon name="edit" style={{ margin: "auto" }} />
         </Button>
       }
       centered={false}
@@ -47,7 +56,7 @@ const UserInput = () => {
                 label="role"
                 options={options}
                 placeholder="role"
-                // value={role}
+                value={role}
                 onChange={e => setRole(e.target.value)}
               />
             </Form.Group>
@@ -63,7 +72,7 @@ const UserInput = () => {
                 fluid
                 label="Password"
                 placeholder="Password"
-                value={username}
+                value={password}
                 onChange={e => setPassword(e.target.value)}
               />
             </Form.Group>
@@ -75,4 +84,4 @@ const UserInput = () => {
   );
 };
 
-export default UserInput;
+export default EditUser;
