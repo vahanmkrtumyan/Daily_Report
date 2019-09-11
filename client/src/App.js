@@ -6,6 +6,8 @@ import Head from "./components/Head";
 import Footer from "./components/Footer";
 import Login from "./components/Login";
 import Users from "./components/Users";
+import Reports from "./components/Reports";
+import Notifications from './components/Notifications';
 
 class App extends Component {
   render() {
@@ -15,6 +17,8 @@ class App extends Component {
         <Switch>
           <Route path="/" component={Login} exact />
           <Route path="/Users" component={Users} exact />
+          <Route path="/Reports" component={Reports} exact />
+          <Route path="/Notifications" component={Notifications} exact />
           {/* <Login /> */}
         </Switch>
         {/* <Footer /> */}

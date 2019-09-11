@@ -16,7 +16,9 @@ const Head = () => (
           Daily Report
         </Menu.Item>
         <Menu.Item as="a">
-          <Link to="/notifications">Notifications</Link>{" "}
+          <Link to="/notifications" style={{ width: "100%" }}>
+            Notifications
+          </Link>{" "}
         </Menu.Item>
         <Menu.Item as="a">
           <Link to="/users">Users</Link>
