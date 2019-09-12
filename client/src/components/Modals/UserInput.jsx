@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Icon, Form } from "semantic-ui-react";
 import axios from "axios";
+import io from "socket.io-client";
 const Joi = require("@hapi/joi");
 
-const UserInput = ({ user, close }) => {
+const UserInput = ({ user }) => {
   let [firstname, setFirstname] = useState("");
   let [lastname, setLastname] = useState("");
   let [role, setRole] = useState("Developer");
@@ -95,7 +96,6 @@ const UserInput = ({ user, close }) => {
           .catch(function(error) {
             console.log(error);
           });
-        close();
       }
       // axios
       //   .post("http://localhost:5000/api/items/users", dat, {
@@ -108,6 +108,15 @@ const UserInput = ({ user, close }) => {
       //   });
     }
     handleClose();
+    handleEmit();
+  };
+
+  let socket = io.connect("http://localhost:5000");
+
+  let handleEmit = () => {
+    socket.emit("users", {
+      user: data
+    });
   };
 
   return (

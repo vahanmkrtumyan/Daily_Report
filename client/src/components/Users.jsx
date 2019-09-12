@@ -3,6 +3,7 @@ import { Icon, Button, Table, Input, Container } from "semantic-ui-react";
 import axios from "axios";
 import _ from "lodash";
 import UserInput from "./Modals/UserInput";
+import io from 'socket.io-client';
 
 const Users = () => {
   const [users, SetUsers] = useState([]);
@@ -10,19 +11,8 @@ const Users = () => {
   const [column, setColumn] = useState(null);
   const [direction, setDirection] = useState(null);
   const [filter, setFilter] = useState("");
-  const [open, setOpen] = useState("");
-
-  const userList = [
-    {
-      id: 1,
-      First_Name: "Vahan",
-      Last_Name: "Mkrtumyan",
-      role: "admin",
-      password: "123456",
-      username: "vahan"
-    }
-  ];
-
+ 
+  
   useEffect(() => {
     axios({
       method: "get",
@@ -36,6 +26,18 @@ const Users = () => {
         console.log(error);
       });
   }, []);
+
+
+let socket = io.connect('http://localhost:5000');
+
+socket.on('users', function(data) {
+  console.log(data)
+})
+
+
+
+
+
 
   let handleSort = clickedColumn => () => {
     if (column !== clickedColumn) {
@@ -63,7 +65,7 @@ const Users = () => {
     });
   };
 
-  let close = () => setOpen(false)
+  
 
   return (
     <div style={{ position: "static", marginTop: "80px" }}>
@@ -121,7 +123,7 @@ const Users = () => {
                   <Table.Cell textAlign="center">{user.password}</Table.Cell>
                   <Table.Cell textAlign="center">{user.role}</Table.Cell>
                   <Table.Cell textAlign="center">
-                    <UserInput user={user} open={open}/>
+                    <UserInput user={user}/>
                   </Table.Cell>
                   <Table.Cell
                     textAlign="center"
