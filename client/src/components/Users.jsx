@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Icon, Button, Table, Input, Container } from "semantic-ui-react";
+import axios from "axios";
 import _ from "lodash";
 import UserInput from "./Modals/UserInput";
 
@@ -9,6 +10,7 @@ const Users = () => {
   const [column, setColumn] = useState(null);
   const [direction, setDirection] = useState(null);
   const [filter, setFilter] = useState("");
+  const [open, setOpen] = useState("");
 
   const userList = [
     {
@@ -21,6 +23,20 @@ const Users = () => {
     }
   ];
 
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: "http://localhost:5000/api/items/users",
+      crossDomain: true
+    })
+      .then(function(response) {
+        SetUsers(response.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }, []);
+
   let handleSort = clickedColumn => () => {
     if (column !== clickedColumn) {
       setColumn(clickedColumn);
@@ -32,12 +48,22 @@ const Users = () => {
     setDirection(direction === "ascending" ? "descending" : "ascending");
   };
 
-  let filtered =
-    userList.filter(function(user) {
-      return (
-        user.First_Name.toLowerCase().indexOf(searchUser.toLowerCase()) !== -1
-      );
-    }) || [];
+  let filtered = users
+    ? users.filter(function(user) {
+        return (
+          user.firstname.toLowerCase().indexOf(searchUser.toLowerCase()) !== -1
+        );
+      })
+    : [];
+
+  let handleDelete = id => {
+    console.log(id)
+    axios.delete("http://localhost:5000/api/items/users", {
+      data: { id: id }
+    });
+  };
+
+  let close = () => setOpen(false)
 
   return (
     <div style={{ position: "static", marginTop: "80px" }}>
@@ -89,17 +115,18 @@ const Users = () => {
             <Table.Body>
               {filtered.map(user => (
                 <Table.Row key={user.id} textAlign="right">
-                  <Table.Cell textAlign="center">{user.First_Name}</Table.Cell>
-                  <Table.Cell textAlign="center">{user.Last_Name}</Table.Cell>
+                  <Table.Cell textAlign="center">{user.firstname}</Table.Cell>
+                  <Table.Cell textAlign="center">{user.lastname}</Table.Cell>
                   <Table.Cell textAlign="center">{user.username}</Table.Cell>
                   <Table.Cell textAlign="center">{user.password}</Table.Cell>
                   <Table.Cell textAlign="center">{user.role}</Table.Cell>
                   <Table.Cell textAlign="center">
-                    <UserInput user={user} />
+                    <UserInput user={user} open={open}/>
                   </Table.Cell>
                   <Table.Cell
                     textAlign="center"
                     style={{ display: "flex", alignItems: "center" }}
+                    onClick={() => handleDelete(user._id)}
                   >
                     <Icon
                       name="trash"

@@ -1,65 +1,113 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Icon, Form } from "semantic-ui-react";
 import axios from "axios";
+const Joi = require("@hapi/joi");
 
-const UserInput = ({ user }) => {
-  let [firstName, setFirstname] = useState("");
-  let [lastName, setLastname] = useState("");
+const UserInput = ({ user, close }) => {
+  let [firstname, setFirstname] = useState("");
+  let [lastname, setLastname] = useState("");
   let [role, setRole] = useState("Developer");
   let [username, setUsername] = useState("");
   let [password, setPassword] = useState("");
+  let [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
-      setFirstname(user.First_Name);
-      setLastname(user.Last_Name);
+      setFirstname(user.firstname);
+      setLastname(user.lastname);
       setRole(user.role);
       setUsername(user.username);
       setPassword(user.password);
     }
   }, [user]);
 
-  console.log(user);
+  let handleOpen = () => setModalOpen(true);
+
+  let handleClose = () => setModalOpen(false);
 
   const options = [
     { key: "m", text: "PM", value: "PM" },
     { key: "f", text: "Developer", value: "Developer" }
   ];
 
-  let onsubmit = () => {
-    let data = {
-      First_Name: firstName,
-      Last_Name: lastName,
-      username: username,
-      role: role
-    };
-    console.log("dfdsf", JSON.stringify(data));
-    // let dat = JSON.stringify(data);
-    // var body = {
-    //   userName: "Fred",
-    //   userEmail: "Flintstone@gmail.com"
-    // };
+  let onChange = (e, data) => {
+    console.log(data.value);
+    setRole(data.value);
+  };
 
-    axios({
-      method: "post",
-      url: "http://localhost:5000/api/items/users",
-      data: data
-    })
-      .then(function(response) {
-        console.log(response);
+  let data = {
+    firstname,
+    lastname,
+    username,
+    password,
+    role
+  };
+
+  const schema = Joi.object({
+    firstname: Joi.string()
+      .min(3)
+      .required(),
+    lastname: Joi.string()
+      .min(3)
+      .required(),
+    username: Joi.string()
+      .min(3)
+      .required(),
+    password: Joi.string()
+      .min(3)
+      .required(),
+    role: Joi.string().required()
+  });
+
+  const result = schema.validate(data);
+
+  let onsubmit = () => {
+    if (user) {
+      data._id = user._id;
+
+      axios({
+        method: "put",
+        url: "http://localhost:5000/api/items/users",
+        data: data,
+
+        crossDomain: true
       })
-      .catch(function(error) {
-        console.log(error);
-      });
-    // axios
-    //   .post("http://localhost:5000/api/items/users", dat, {
-    //     crossDomain: true,
-    //     "Content-Type": "application/json"
-    //   })
-    //   .then(function(response) {
-    //     // handle success
-    //     console.log(response);
-    //   });
+        .then(function(response) {
+          console.log(response.data);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    } else {
+      if (result.error) {
+        alert(result.error);
+      } else {
+        axios({
+          method: "post",
+          url: "http://localhost:5000/api/items/users",
+          data: data,
+
+          crossDomain: true
+        })
+          .then(function(response) {
+            console.log(response.data);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+        close();
+      }
+      // axios
+      //   .post("http://localhost:5000/api/items/users", dat, {
+      //     crossDomain: true,
+      //     "Content-Type": "application/json"
+      //   })
+      //   .then(function(response) {
+      //     // handle success
+      //     console.log(response);
+      //   });
+    }
+    handleClose();
   };
 
   return (
@@ -67,6 +115,7 @@ const UserInput = ({ user }) => {
       trigger={
         user ? (
           <Button
+            onClick={handleOpen}
             style={{
               backgroundColor: "Transparent",
               border: "none",
@@ -80,12 +129,14 @@ const UserInput = ({ user }) => {
             <Icon name="edit" style={{ margin: "auto" }} />
           </Button>
         ) : (
-          <Button>
+          <Button onClick={handleOpen}>
             Add user <Icon name="add user" style={{ margin: "auto" }} />
           </Button>
         )
       }
       centered={false}
+      open={modalOpen}
+      onClose={handleClose}
     >
       <Modal.Header>{user ? "Edit an user" : "Add an user"}</Modal.Header>
       <Modal.Content>
@@ -96,14 +147,14 @@ const UserInput = ({ user }) => {
                 fluid
                 label="First name"
                 placeholder="First name"
-                value={firstName}
+                value={firstname}
                 onChange={e => setFirstname(e.target.value)}
               />
               <Form.Input
                 fluid
                 label="Last name"
                 placeholder="Last name"
-                value={lastName}
+                value={lastname}
                 onChange={e => setLastname(e.target.value)}
               />
               <Form.Select
@@ -112,7 +163,8 @@ const UserInput = ({ user }) => {
                 options={options}
                 placeholder="role"
                 value={role}
-                onChange={e => setRole(e.target.value)}
+                onChange={onChange}
+                //   onChange={e => setRole(e.target.value)}
               />
             </Form.Group>
             <Form.Group widths="equal">

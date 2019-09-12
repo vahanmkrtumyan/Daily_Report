@@ -7,38 +7,19 @@ const app = express();
 
 var cors = require("cors");
 
-app.use(cors());
 app.use(bodyParser.json());
-// app.use(
-//   bodyParser.urlencoded({
-//     extended: true
-//   })
-// );
+app.use(cors());
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 const connectionString = "postgressql://postgres:1990@localhost:5432/postgres";
-
-// const client = new Client({
-//   connectionString: connectionString
-//   // user: "postgres",
-//   // password: "1990"
-//   // host: "Vahan",
-//   // port: 5432,
-//   // database: "postgres"
-// });
-
-// var client = new Client({
-//   host: "postgres.cheevgkmqkgg.us-east-2.rds.amazonaws.com",
-//   user: "postgres",
-//   password: "postgres",
-//   database: "postgres"
-// });
-
-// client
-//   .connect()
-//   .then(() => console.log("Connected"))
-//   .then(() => client.query("select * from users"))
-//   .then(results => console.table(results.rows))
-//   .catch(e => console.log(e))
-//   .finally(() => client.end());
 
 app.use("/api/items", items);
 
