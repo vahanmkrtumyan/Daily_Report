@@ -26,12 +26,14 @@ const Login = props => {
         }
       })
       .catch(function(error) {
+        document.getElementById("login").innerHTML +=
+          "username or password are incorect";
         console.log(error);
       });
   };
 
   return (
-    <div>
+    <div id="login">
       <Grid
         textAlign="center"
         style={{ height: "100vh" }}
