@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Grid, Header, Image, Segment } from "semantic-ui-react";
 import axios from "axios";
+const Joi = require("@hapi/joi");
 
 const Login = props => {
   let [username, setUsername] = useState("");
@@ -32,6 +33,24 @@ const Login = props => {
       });
   };
 
+  let data = {
+    username,
+    password
+  };
+
+  const schema = Joi.object({
+    username: Joi.string()
+      .min(3)
+      .required(),
+    password: Joi.string()
+      .min(3)
+      .required()
+  });
+
+  const result = schema.validate(data);
+
+  console.log(result);
+
   return (
     <div id="login">
       <Grid
@@ -53,6 +72,7 @@ const Login = props => {
                 value={username}
                 onChange={e => setUsername(e.target.value)}
               />
+              <p>Passowrd is not allowed to be empty</p>
               <Form.Input
                 fluid
                 icon="lock"
