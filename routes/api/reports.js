@@ -25,7 +25,7 @@ router.put("/", (req, res) => {
 
   pool
     .query(
-      `UPDATE reports SET name = '${req.body.name}', estimation = '${req.body.estimation}', spent = '${req.body.spent}', description = '${req.body.description}', confirmed = '${req.body.confirmed}' WHERE _id = '${req.body._id}'`
+      `UPDATE reports SET name = '${req.body.name}', estimation = '${req.body.estimation}', spent = '${req.body.spent}', description = '${req.body.description}', confirmed = '${req.body.confirmed}', requested = '${req.body.requested}' WHERE _id = '${req.body._id}'`
     )
     .then(results => res.json(results.rows));
 });
@@ -57,7 +57,7 @@ router.delete("/", (req, res) => {
 
 router.post("/", (req, res) => {
   let userid = JSON.parse(req.body.user);
-  console.log(userid._id);
+  console.log(req.body);
   const schema = Joi.object({
     name: Joi.string()
       .min(3)
@@ -73,7 +73,7 @@ router.post("/", (req, res) => {
       .required(),
     userid: Joi.object().required(),
     confirmed: Joi.boolean().required(),
-    requseted: Joi.boolean().required()
+    requested: Joi.boolean()
   });
 
   let data = {
@@ -83,7 +83,7 @@ router.post("/", (req, res) => {
     description: req.body.description,
     userid: userid,
     confirmed: false,
-    requseted: false
+    requested: false
   };
 
   const result = schema.validate(data);
@@ -101,7 +101,7 @@ router.post("/", (req, res) => {
         }', '${req.body.spent}', '${false}', '${JSON.parse(req.body.user)
           .firstname +
           " " +
-          JSON.parse(req.body.user).lastname}');`
+          JSON.parse(req.body.user).lastname}', '${req.body.requested}')`
       )
       .then(error => {
         if (error) {

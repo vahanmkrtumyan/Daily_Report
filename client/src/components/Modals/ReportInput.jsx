@@ -35,7 +35,8 @@ const ReportInput = ({ report, update, add }) => {
     estimation,
     spent,
     user: localStorage.getItem("user"),
-    confirmed: false
+    confirmed: false,
+    requested: false
   };
 
   const schema = Joi.object({
@@ -62,6 +63,7 @@ const ReportInput = ({ report, update, add }) => {
   let onSubmit = () => {
     if (report) {
       data._id = report._id;
+      data.requested = false;
       axios({
         method: "put",
         url: "http://localhost:5000/api/reports",
@@ -80,6 +82,7 @@ const ReportInput = ({ report, update, add }) => {
       if (result.error) {
         alert(result.error);
       } else {
+        data.requested = false;
         add(data);
         axios({
           method: "post",

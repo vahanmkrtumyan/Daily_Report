@@ -4,6 +4,7 @@ import axios from "axios";
 import _ from "lodash";
 import UserInput from "./Modals/UserInput";
 import io from "socket.io-client";
+import Head from "./Header";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -79,6 +80,8 @@ const Users = () => {
   };
 
   return (
+    <div>
+    <Head/>
     <div className="pt-70">
       <Container>
         <div className="pb-20 pt-30 d-flex justify-between">
@@ -146,6 +149,7 @@ const Users = () => {
           </Table.Body>
         </Table>
       </Container>
+    </div>
     </div>
   );
 };
