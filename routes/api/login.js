@@ -12,11 +12,7 @@ var pool = new Pool({
 });
 
 pool.connect();
-//client.connect().then(() => console.log("Connected"));
-//  .then(() => client.query("select * from users"))
-//  .then(results => console.table(results.rows))
-//  .catch(e => console.log(e));
-// .finally(() => client.end());
+
 
 router.put("/", (req, res) => {
   console.log(req.body.username);

@@ -62,7 +62,6 @@ const Login = props => {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
               />
-
               <Button
                 color="teal"
                 fluid

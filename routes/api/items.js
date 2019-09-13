@@ -36,7 +36,12 @@ router.put("/users", (req, res) => {
 });
 
 router.get("/users", (req, res) => {
-  client.query("select * from users").then(results => res.json(results.rows));
+  console.log(JSON.parse(req.query.user));
+  JSON.parse(req.query.user).role === "Admin"
+    ? client
+        .query("select * from users")
+        .then(results => res.json(results.rows))
+    : res.send([]);
 });
 
 router.delete("/users", (req, res) => {

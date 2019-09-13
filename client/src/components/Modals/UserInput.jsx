@@ -4,7 +4,7 @@ import axios from "axios";
 import io from "socket.io-client";
 const Joi = require("@hapi/joi");
 
-const UserInput = ({ user }) => {
+const UserInput = ({ user, add, update }) => {
   let [firstname, setFirstname] = useState("");
   let [lastname, setLastname] = useState("");
   let [role, setRole] = useState("Developer");
@@ -28,7 +28,8 @@ const UserInput = ({ user }) => {
 
   const options = [
     { key: "m", text: "PM", value: "PM" },
-    { key: "f", text: "Developer", value: "Developer" }
+    { key: "f", text: "Developer", value: "Developer" },
+    { key: "n", text: "Admin", value: "Admin" }
   ];
 
   let onChange = (e, data) => {
@@ -62,19 +63,19 @@ const UserInput = ({ user }) => {
 
   const result = schema.validate(data);
 
-  let onsubmit = () => {
+  let onSubmit = () => {
     if (user) {
       data._id = user._id;
-
       axios({
         method: "put",
         url: "http://localhost:5000/api/items/users",
         data: data,
-
         crossDomain: true
       })
         .then(function(response) {
           console.log(response.data);
+          update(data);
+          handleClose();
         })
         .catch(function(error) {
           console.log(error);
@@ -83,15 +84,17 @@ const UserInput = ({ user }) => {
       if (result.error) {
         alert(result.error);
       } else {
+        add(data);
         axios({
           method: "post",
           url: "http://localhost:5000/api/items/users",
           data: data,
-
           crossDomain: true
         })
           .then(function(response) {
             console.log(response.data);
+
+            handleClose();
           })
           .catch(function(error) {
             console.log(error);
@@ -107,7 +110,7 @@ const UserInput = ({ user }) => {
       //     console.log(response);
       //   });
     }
-    handleClose();
+
     handleEmit();
   };
 
@@ -123,20 +126,16 @@ const UserInput = ({ user }) => {
     <Modal
       trigger={
         user ? (
-          <Button
+          <button
             onClick={handleOpen}
+            className="no-style-btn"
             style={{
-              backgroundColor: "Transparent",
-              border: "none",
               color: "#2ca5ee",
-              padding: "15px 32px",
-              textAlign: "center",
-              textDecoration: "none",
-              cursor: "pointer"
+              textAlign: "center"
             }}
           >
             <Icon name="edit" style={{ margin: "auto" }} />
-          </Button>
+          </button>
         ) : (
           <Button onClick={handleOpen}>
             Add user <Icon name="add user" style={{ margin: "auto" }} />
@@ -192,7 +191,7 @@ const UserInput = ({ user }) => {
                 onChange={e => setPassword(e.target.value)}
               />
             </Form.Group>
-            <Form.Button onClick={() => onsubmit()}>Submit</Form.Button>
+            <Form.Button onClick={() => onSubmit()}>Submit</Form.Button>
           </Form>
         </Modal.Description>
       </Modal.Content>

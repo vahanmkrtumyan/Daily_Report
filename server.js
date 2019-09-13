@@ -3,6 +3,7 @@ const { Client } = require("pg");
 const bodyParser = require("body-parser");
 const items = require("./routes/api/items");
 const login = require("./routes/api/login");
+const reports = require("./routes/api/reports");
 const socket = require("socket.io");
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(cors());
 
 app.use("/api/items", items);
 app.use("/api/login", login);
+app.use("/api/reports", reports);
 
 const port = process.env.PORT || 5000;
 

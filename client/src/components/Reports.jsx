@@ -8,60 +8,86 @@ const Reports = () => {
   const [direction, setDirection] = useState(null);
   const [filter, setFilter] = useState("");
   const [activeItem, setActiveitem] = useState("Not confirmed");
-  const [reports, SetReports] = useState([
-    {
-      id: 1,
-      //   First_Name: "Vahan",
-      //   Last_Name: "Mkrtumyan",
-      name: "Bug fix",
-      description: "ddddddddddd",
-      estimation: "1 hour 40 min",
-      spent: "1 hour 30 min",
-      confirmed: "no"
-    },
-    {
-      id: 2,
-      //   First_Name: "Vahan",
-      //   Last_Name: "Mkrtumyan",
-      name: "gasdasdasd",
-      description: "ssssssssss",
-      estimation: "1 hour 40 min",
-      spent: "2 hour 30 min",
-      confirmed: "yes"
-    }
-  ]);
+  const [reports, setReports] = useState();
 
   useEffect(() => {
-    // fetch("http://localhost:5000/api/items", {
-    //   crossDomain: true,
-    //   method: "GET",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     username: user,
-    //     password: pass,
-    //   })
-    // }).then(response => console.log(response));
-
-    axios.get("api/items").then(function(response) {
-      // handle success
-      console.log(response.data);
-    });
+    axios({
+      method: "get",
+      url: "http://localhost:5000/api/reports",
+      crossDomain: true,
+      params: { user: localStorage.getItem("user") }
+    })
+      .then(function(response) {
+        setReports(response.data);
+        console.log(response.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }, []);
+
+  let user = JSON.parse(localStorage.getItem("user"));
+  console.log(user.role);
+
+  let handleAdd = report => {
+    let reportsNew = [...reports];
+    reportsNew.push(report);
+    setReports(reportsNew);
+  };
+
+  let handleUpdate = report => {
+    let reportsNew = [...reports];
+    let index = reportsNew.findIndex(k => k._id === report._id);
+    reportsNew[index] = report;
+    setReports(reportsNew);
+  };
+
+  let handleDelete = id => {
+    console.log(id);
+    axios.delete("http://localhost:5000/api/reports", {
+      data: { id: id }
+    });
+    let newArray = reports.filter(function(report) {
+      return report._id !== id;
+    });
+    setReports(newArray);
+  };
+
+  let handleConfirm = report => {
+    let newReport = { ...report };
+    newReport.confirmed = true;
+    newReport.requested = false;
+      axios({
+      method: "put",
+      url: "http://localhost:5000/api/reports",
+      data: newReport,
+      crossDomain: true
+    })
+      .then(function(response) {
+        console.log(response.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
+
+  };
 
   let handleActiveTab = tab => {
     setActiveitem(tab);
   };
 
-  let filtered =
-    reports.filter(function(report) {
-      if (activeItem === "Not confirmed") return report.confirmed === "no";
-      else {
-        return report.confirmed === "yes";
-      }
-    }) || [];
+  let filtered = reports
+    ? reports.filter(function(report) {
+        if (activeItem === "Not confirmed") return report.confirmed === false;
+        else {
+          return report.confirmed === true;
+        }
+      })
+    : [];
 
   return (
-    <div style={{ position: "static", marginTop: "80px" }}>
+    <div style={{ paddingTop: "75px" }}>
       <div style={{ textAlign: "right" }}>
         <Container>
           <Menu tabular>
@@ -77,11 +103,16 @@ const Reports = () => {
             />
           </Menu>{" "}
           <div style={{ margin: "20px", right: 0 }}>
-            <ReportInput />
+            <ReportInput add={handleAdd} />
           </div>
-          <Table sortable style={{ margin: "auto 0" }}>
+          <Table sortable>
             <Table.Header className="mobile hidden">
               <Table.Row>
+                {user.role === "PM" ? (
+                  <Table.HeaderCell textAlign="center">
+                    Developer
+                  </Table.HeaderCell>
+                ) : null}
                 <Table.HeaderCell
                   //      sorted={column === "First name" ? direction : null}
                   //  onClick={handleSort("First name")}
@@ -101,23 +132,41 @@ const Reports = () => {
                   textAlign="center"
                   //     sorted={column === "login" ? direction : null}
                 >
-                  <h3>Spent</h3>
+                  Spent
                 </Table.HeaderCell>
                 <Table.HeaderCell textAlign="center">
-                  <h3>Description</h3>
+                  Description
                 </Table.HeaderCell>
-                <Table.HeaderCell textAlign="center">
-                  <h3>Edit</h3>
-                </Table.HeaderCell>
-                <Table.HeaderCell textAlign="center">
-                  <h3>Delete</h3>
-                </Table.HeaderCell>
+                {activeItem === "Not confirmed" ? (
+                  user.role === "Developer" ? (
+                    <Table.HeaderCell textAlign="center">Edit</Table.HeaderCell>
+                  ) : user.role === "PM" ? (
+                    <Table.HeaderCell textAlign="center">
+                      Confirm
+                    </Table.HeaderCell>
+                  ) : null
+                ) : null}
+                {activeItem === "Not confirmed" ? (
+                  user.role === "Developer" ? (
+                    <Table.HeaderCell textAlign="center">
+                      Delete
+                    </Table.HeaderCell>
+                  ) : user.role === "PM" ? (
+                    <Table.HeaderCell textAlign="center">
+                      Request change
+                    </Table.HeaderCell>
+                  ) : null
+                ) : null}
               </Table.Row>
             </Table.Header>
-
             <Table.Body>
               {filtered.map(report => (
-                <Table.Row key={report.id} textAlign="right">
+                <Table.Row key={report._id} textAlign="right">
+                  {user.role === "PM" ? (
+                    <Table.Cell textAlign="center">
+                      {report.usersname}
+                    </Table.Cell>
+                  ) : null}
                   <Table.Cell textAlign="center">{report.name}</Table.Cell>
                   <Table.Cell textAlign="center">
                     {report.estimation}
@@ -126,25 +175,46 @@ const Reports = () => {
                   <Table.Cell textAlign="center">
                     {report.description}
                   </Table.Cell>
-                  <Table.Cell textAlign="center">
-                    <ReportInput report={report} />
-                  </Table.Cell>
-                  <Table.Cell textAlign="center">
-                    <Icon
-                      name="trash"
-                      color="red"
-                      style={{
-                        backgroundColor: "Transparent",
-                        border: "none",
-                        color: "#2ca5ee",
-                        padding: "20px 32px",
-                        // textAlign: "center",
-                        textDecoration: "none",
-                        cursor: "pointer",
-                        margin: "auto"
-                      }}
-                    />
-                  </Table.Cell>
+                  {activeItem === "Not confirmed" ? (
+                    user.role === "Developer" ? (
+                      <Table.Cell textAlign="center">
+                        <ReportInput report={report} update={handleUpdate} />
+                      </Table.Cell>
+                    ) : user.role === "PM" ? (
+                      <Table.Cell
+                        textAlign="center"
+                        onClick={() => handleConfirm(report)}
+                      >
+                        <Icon
+                          name="check"
+                          color="blue"
+                          className="no-style-btn bell"
+                        />
+                      </Table.Cell>
+                    ) : null
+                  ) : null}
+                  {activeItem === "Not confirmed" ? (
+                    user.role === "Developer" ? (
+                      <Table.Cell
+                        textAlign="center"
+                        onClick={() => handleDelete(report._id)}
+                      >
+                        <Icon
+                          name="trash"
+                          color="red"
+                          className="no-style-btn bell"
+                        />
+                      </Table.Cell>
+                    ) : user.role === "PM" ? (
+                      <Table.Cell textAlign="center">
+                        <Icon
+                          name="redo"
+                          color="red"
+                          className="no-style-btn bell"
+                        />
+                      </Table.Cell>
+                    ) : null
+                  ) : null}
                 </Table.Row>
               ))}
             </Table.Body>

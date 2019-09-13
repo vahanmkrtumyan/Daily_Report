@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import logo from "./logo.svg";
 import "./App.css";
-import Head from "./components/Head";
+import Head from "./components/Header";
 import Footer from "./components/Footer";
 import Login from "./components/Login";
 import Users from "./components/Users";

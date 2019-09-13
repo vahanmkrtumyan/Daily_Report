@@ -1,6 +1,5 @@
 import React from "react";
 import { Container, Image, List, Segment } from "semantic-ui-react";
-import "./layout.css";
 
 const Footer = () => {
   return (

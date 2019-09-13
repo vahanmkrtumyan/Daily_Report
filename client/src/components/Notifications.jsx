@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import {
-  Icon,
-  Button,
-  Table,
-  Input,
-  Container,
-  Menu,
-  Card
+    Icon,
+    Button,
+    Table,
+    Input,
+    Container,
+    Menu,
+    Card, Search
 } from "semantic-ui-react";
 import ReportInput from "./Modals/ReportInput";
+import UserInput from "./Modals/UserInput";
 
 const Notifications = () => {
   const [column, setColumn] = useState(null);
@@ -53,29 +54,29 @@ const Notifications = () => {
   let asd = "asd";
 
   return (
-    <div style={{ position: "static", marginTop: "80px" }}>
-      <h3>Notifications</h3>
-      <div tyle={{ textAlign: "right" }}>
-        <Button>Clear notifications</Button>
-      </div>
-      <div style={{ textAlign: "left" }}>
+    <div className="pt-70">
+
         <Container>
-          <Card
-            fluid
-            header="Elliot Baker"
-            meta="Friend"
-            description="Elliot is a sound engineer living in Nashville who enjoys playing guitar and hanging with his cat."
-          />
+            <div className="pb-20 pt-30 d-flex justify-between align-center">
+                <h3 className="m-0">Notifications</h3>
+                <Button>Clear notifications</Button>
+            </div>
+            <div>
+                <Card
+                    fluid
+                    header="Elliot Baker"
+                    meta="Friend"
+                    description="Elliot is a sound engineer living in Nashville who enjoys playing guitar and hanging with his cat."
+                />
+                <Card
+                    fluid
+                    header="Elliot Baker"
+                    meta="Friend"
+                    description="Elliot is a sound engineer living in Nashville who enjoys playing guitar and hanging with his cat."
+                />
+            </div>
+
         </Container>
-        <Container>
-          <Card
-            fluid
-            header="Elliot Baker"
-            meta="Friend"
-            description="Elliot is a sound engineer living in Nashville who enjoys playing guitar and hanging with his cat."
-          />
-        </Container>
-      </div>
     </div>
   );
 };
