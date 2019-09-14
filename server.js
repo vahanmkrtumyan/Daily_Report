@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const items = require("./routes/api/items");
 const login = require("./routes/api/login");
 const reports = require("./routes/api/reports");
+const notifications = require("./routes/api/notifications");
 const socket = require("socket.io");
 
 const app = express();
@@ -27,6 +28,7 @@ app.use(cors());
 app.use("/api/items", items);
 app.use("/api/login", login);
 app.use("/api/reports", reports);
+app.use("/api/notifications", notifications);
 
 const port = process.env.PORT || 5000;
 

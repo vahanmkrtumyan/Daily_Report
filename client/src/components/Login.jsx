@@ -43,7 +43,7 @@ const Login = props => {
       })
       .catch(function(error) {
         document.getElementById("login").innerHTML +=
-          "Username or password is incorect";
+          "Username or password is incorrect";
         console.log(error);
       });
   };

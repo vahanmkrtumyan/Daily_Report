@@ -1,27 +1,25 @@
 const express = require("express");
 const router = express.Router();
-const { Client, Pool } = require("pg");
+//const { Pool } = require("pg");
 const uuidv1 = require("uuid/v1");
 const Joi = require("@hapi/joi");
+const pool = require("./pool");
 
-var client = new Client({
-  host: "postgres.cheevgkmqkgg.us-east-2.rds.amazonaws.com",
-  user: "postgres",
-  password: "postgres",
-  database: "postgres"
-});
-
-var pool = new Pool({
-  host: "postgres.cheevgkmqkgg.us-east-2.rds.amazonaws.com",
-  user: "postgres",
-  password: "postgres",
-  database: "postgres"
-});
-
-client.connect();
+// var pool = new Pool({
+//   host: "postgres.cheevgkmqkgg.us-east-2.rds.amazonaws.com",
+//   user: "postgres",
+//   password: "postgres",
+//   database: "postgres"
+// });
 
 router.put("/", (req, res) => {
   console.log(req.body);
+
+  let type = req.body.confirmed
+    ? "confirmed a report"
+    : req.body.requested
+    ? "requested a change on report"
+    : "edited a report";
 
   pool
     .query(
@@ -33,7 +31,15 @@ router.put("/", (req, res) => {
         req.body.requested
       }' WHERE _id = '${req.body._id}'`
     )
-    .then(results => res.json(results.rows));
+    .then(
+      pool.query(
+        `INSERT INTO notifications values('${uuidv1().toString()}', '${
+          req.body.user._id
+        }', '${req.body.user.firstname +
+          " " +
+          req.body.user.lastname}', '${type}', '${req.body.name}')`
+      )
+    );
 });
 
 router.get("/", (req, res) => {
@@ -57,7 +63,7 @@ router.get("/", (req, res) => {
 
 router.delete("/", (req, res) => {
   console.log(req.body);
-  client
+  pool
     .query(`DELETE FROM reports WHERE _id = '${req.body.report._id}'`)
     .then(results =>
       pool.query(

@@ -1,34 +1,23 @@
 const express = require("express");
 const router = express.Router();
-const { Client, Pool } = require("pg");
+const pool = require("./pool");
+//const { Pool } = require("pg");
 const uuidv1 = require("uuid/v1");
 const Joi = require("@hapi/joi");
 
-var client = new Client({
-  host: "postgres.cheevgkmqkgg.us-east-2.rds.amazonaws.com",
-  user: "postgres",
-  password: "postgres",
-  database: "postgres"
-});
+// var pool = new Pool({
+//   host: "postgres.cheevgkmqkgg.us-east-2.rds.amazonaws.com",
+//   user: "postgres",
+//   password: "postgres",
+//   database: "postgres"
+// });
 
-var pool = new Pool({
-  host: "postgres.cheevgkmqkgg.us-east-2.rds.amazonaws.com",
-  user: "postgres",
-  password: "postgres",
-  database: "postgres"
-});
 
-client.connect();
-//client.connect().then(() => console.log("Connected"));
-//  .then(() => client.query("select * from users"))
-//  .then(results => console.table(results.rows))
-//  .catch(e => console.log(e));
-// .finally(() => client.end());
 
 router.put("/users", (req, res) => {
   console.log(req.body);
 
-  client
+  pool
     .query(
       `UPDATE users SET firstname = '${req.body.firstname}', lastname = '${req.body.lastname}', username = '${req.body.username}', password = '${req.body.password}', role = '${req.body.role}' WHERE _id = '${req.body._id}'`
     )
@@ -38,14 +27,14 @@ router.put("/users", (req, res) => {
 router.get("/users", (req, res) => {
   console.log(JSON.parse(req.query.user));
   JSON.parse(req.query.user).role === "Admin"
-    ? client
+    ? pool
         .query("select * from users")
         .then(results => res.json(results.rows))
     : res.send([]);
 });
 
 router.delete("/users", (req, res) => {
-  client
+  pool
     .query(`DELETE FROM users WHERE _id = '${req.body.id}'`)
     .then(results => res.json(results.rows));
 });
