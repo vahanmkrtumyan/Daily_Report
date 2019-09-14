@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import {
-  Container,
-  Menu,
-  Sidebar,
-  Icon
-} from "semantic-ui-react";
+import { Container, Menu, Sidebar, Icon } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import Notifications from "./Notifications";
 
 const Head = () => {
   const [visible, setVisible] = useState(false);
+  const [active, setActive] = useState("");
 
   let user = JSON.parse(localStorage.getItem("user"));
+
+  let handleCount = rows => {
+    if (rows.length > 0) {
+      setActive("active");
+    } else setActive("");
+  };
 
   return (
     <div>
@@ -47,7 +49,7 @@ const Head = () => {
           <Icon
             name="bell"
             size="large"
-            className="no-style-btn icon-white active icon-notification"
+            className={`no-style-btn icon-white ${active} icon-notification`}
           />
         </button>
       </Menu>
@@ -59,7 +61,10 @@ const Head = () => {
         vertical
         visible={visible}
       >
-        <Notifications />
+        <div style={{ maxWidth: "90%", margin: "auto", paddingTop: "5px" }}>
+          
+          <Notifications count={handleCount} />
+        </div>
       </Sidebar>
     </div>
   );

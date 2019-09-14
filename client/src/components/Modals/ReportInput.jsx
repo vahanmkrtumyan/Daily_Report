@@ -20,16 +20,14 @@ const ReportInput = ({ report, update, add }) => {
     }
   }, [report]);
 
-  let handleOpen = () => setModalOpen(true);
-
-  let handleClose = () => setModalOpen(false);
+  let user = JSON.parse(localStorage.getItem("user"));
 
   let data = {
     name,
     description,
     estimation,
     spent,
-    user: localStorage.getItem("user"),
+    user: user._id,
     confirmed: false,
     requested: false
   };
@@ -63,23 +61,23 @@ const ReportInput = ({ report, update, add }) => {
       axios({
         method: "put",
         url: "http://localhost:5000/api/reports",
-        data: data,
+        data: { data, user },
         crossDomain: true
       })
         .then(function(response) {
           console.log(response.data);
-          update(data);
-          handleClose();
         })
         .catch(function(error) {
           console.log(error);
         });
+      update(data);
+      setModalOpen(false);
     } else {
       if (result.error) {
         alert(result.error);
       } else {
         data.requested = false;
-        add(data);
+
         axios({
           method: "post",
           url: "http://localhost:5000/api/reports",
@@ -88,12 +86,12 @@ const ReportInput = ({ report, update, add }) => {
         })
           .then(function(response) {
             console.log(response.data);
-
-            handleClose();
           })
           .catch(function(error) {
             console.log(error);
           });
+        add(data);
+        setModalOpen(false);
       }
     }
 
@@ -113,7 +111,7 @@ const ReportInput = ({ report, update, add }) => {
       trigger={
         report ? (
           <button
-            onClick={handleOpen}
+            onClick={() => setModalOpen(true)}
             className="no-style-btn"
             style={{
               color: "#2ca5ee",
@@ -123,7 +121,7 @@ const ReportInput = ({ report, update, add }) => {
             <Icon name="edit" style={{ margin: "auto" }} />
           </button>
         ) : (
-          <Button onClick={handleOpen}>
+          <Button onClick={() => setModalOpen(true)}>
             {" "}
             Add a report <Icon name="add user" style={{ margin: "auto" }} />
           </Button>
@@ -131,7 +129,7 @@ const ReportInput = ({ report, update, add }) => {
       }
       centered={false}
       open={modalOpen}
-      onClose={handleClose}
+      onClose={() => setModalOpen(false)}
     >
       <Modal.Header>{report ? "Edit a report" : "Add a report"}</Modal.Header>
       <Modal.Content>

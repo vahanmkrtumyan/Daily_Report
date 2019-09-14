@@ -15,29 +15,29 @@ const pool = require("./pool");
 router.put("/", (req, res) => {
   console.log(req.body);
 
-  let type = req.body.confirmed
+  let type = req.body.data.confirmed
     ? "confirmed a report"
-    : req.body.requested
+    : req.body.data.requested
     ? "requested a change on report"
     : "edited a report";
 
   pool
     .query(
-      `UPDATE reports SET name = '${req.body.name}', estimation = '${
-        req.body.estimation
-      }', spent = '${req.body.spent}', description = '${
-        req.body.description
-      }', confirmed = '${req.body.confirmed}', requested = '${
-        req.body.requested
-      }' WHERE _id = '${req.body._id}'`
+      `UPDATE reports SET name = '${req.body.data.name}', estimation = '${
+        req.body.data.estimation
+      }', spent = '${req.body.data.spent}', description = '${
+        req.body.data.description
+      }', confirmed = '${req.body.data.confirmed}', requested = '${
+        req.body.data.requested
+      }' WHERE _id = '${req.body.data._id}'`
     )
     .then(
       pool.query(
         `INSERT INTO notifications values('${uuidv1().toString()}', '${
-          req.body.user._id
+          req.body.data.user
         }', '${req.body.user.firstname +
           " " +
-          req.body.user.lastname}', '${type}', '${req.body.name}')`
+          req.body.user.lastname}', '${type}', '${req.body.data.name}')`
       )
     );
 });

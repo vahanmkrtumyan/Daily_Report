@@ -6,7 +6,7 @@ import axios from "axios";
 import ReportInput from "./Modals/ReportInput";
 import Head from "./Header";
 
-const Reports = () => {
+const Reports = props => {
   const [activeItem, setActiveitem] = useState("Not confirmed");
   const [reports, setReports] = useState();
   const [loading, setLoading] = useState(true);
@@ -51,7 +51,7 @@ const Reports = () => {
     report.user = JSON.parse(localStorage.getItem("user"));
 
     axios.delete("http://localhost:5000/api/reports", {
-      data: { report: report }
+      data: { data: report, user }
     });
     let newArray = reports.filter(function(rep) {
       return rep._id !== report._id;
@@ -66,17 +66,16 @@ const Reports = () => {
     axios({
       method: "put",
       url: "http://localhost:5000/api/reports",
-      data: newReport,
+      data: { data: newReport, user },
       crossDomain: true
     })
       .then(function(response) {
         console.log(response.data);
-        
       })
       .catch(function(error) {
         console.log(error);
       });
-      handleUpdate(newReport);
+    handleUpdate(newReport);
   };
 
   let handleRequest = report => {
@@ -85,7 +84,7 @@ const Reports = () => {
     axios({
       method: "put",
       url: "http://localhost:5000/api/reports",
-      data: newReport,
+      data: { data: newReport, user },
       crossDomain: true
     })
       .then(function(response) {
