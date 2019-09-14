@@ -38,10 +38,10 @@ const UserInput = ({ user, add, update }) => {
   };
 
   let data = {
-    firstname,
-    lastname,
-    username,
-    password,
+    firstname: firstname.trim(),
+    lastname: lastname.trim(),
+    username: username.trim(),
+    password: password.trim(),
     role
   };
 

@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Icon, Input, Card } from "semantic-ui-react";
-import ReportInput from "./Modals/ReportInput";
-import UserInput from "./Modals/UserInput";
+import { Card } from "semantic-ui-react";
 
 const Notifications = () => {
-  const [reports, SetReports] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
-  let asd = "asd";
 
   return (
     <div>

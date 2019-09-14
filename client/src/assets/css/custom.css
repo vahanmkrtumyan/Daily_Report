@@ -96,3 +96,8 @@
   border-radius: 50%;
   background-color: #db2828;
 }
+
+#login {
+  color: #db2828;
+  font-size: 18px;
+}

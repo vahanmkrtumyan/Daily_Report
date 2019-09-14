@@ -25,7 +25,13 @@ router.put("/", (req, res) => {
 
   pool
     .query(
-      `UPDATE reports SET name = '${req.body.name}', estimation = '${req.body.estimation}', spent = '${req.body.spent}', description = '${req.body.description}', confirmed = '${req.body.confirmed}', requested = '${req.body.requested}' WHERE _id = '${req.body._id}'`
+      `UPDATE reports SET name = '${req.body.name}', estimation = '${
+        req.body.estimation
+      }', spent = '${req.body.spent}', description = '${
+        req.body.description
+      }', confirmed = '${req.body.confirmed}', requested = '${
+        req.body.requested
+      }' WHERE _id = '${req.body._id}'`
     )
     .then(results => res.json(results.rows));
 });
@@ -50,9 +56,20 @@ router.get("/", (req, res) => {
 });
 
 router.delete("/", (req, res) => {
+  console.log(req.body);
   client
-    .query(`DELETE FROM reports WHERE _id = '${req.body.id}'`)
-    .then(results => res.json(results.rows));
+    .query(`DELETE FROM reports WHERE _id = '${req.body.report._id}'`)
+    .then(results =>
+      pool.query(
+        `INSERT INTO notifications values('${uuidv1().toString()}', '${
+          req.body.report.user._id
+        }', '${req.body.report.user.firstname +
+          " " +
+          req.body.report.user.lastname}', 'deleted a report', '${
+          req.body.report.name
+        }')`
+      )
+    );
 });
 
 router.post("/", (req, res) => {
@@ -103,11 +120,19 @@ router.post("/", (req, res) => {
           " " +
           JSON.parse(req.body.user).lastname}', '${req.body.requested}')`
       )
-      .then(error => {
-        if (error) {
-          res.send(error);
+      .then(respond => {
+        if (respond) {
+          pool.query(
+            `INSERT INTO notifications values('${uuidv1().toString()}', '${
+              userid._id
+            }', '${JSON.parse(req.body.user).firstname +
+              " " +
+              JSON.parse(req.body.user).lastname}', 'created a report', '${
+              req.body.name
+            }')`
+          );
         } else {
-          res.json({ reportCreated: true });
+          res.json({ reportCreated: false });
         }
       });
   }

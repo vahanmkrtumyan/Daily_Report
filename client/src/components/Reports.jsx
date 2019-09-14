@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Icon, Button, Table, Input, Container, Menu } from "semantic-ui-react";
-import ReportInput from "./Modals/ReportInput";
+import { Icon, Table, Container, Menu } from "semantic-ui-react";
+import { ClipLoader } from "react-spinners";
+import { css } from "@emotion/core";
 import axios from "axios";
+import ReportInput from "./Modals/ReportInput";
 import Head from "./Header";
 
 const Reports = () => {
-  const [column, setColumn] = useState(null);
-  const [direction, setDirection] = useState(null);
-  const [filter, setFilter] = useState("");
   const [activeItem, setActiveitem] = useState("Not confirmed");
   const [reports, setReports] = useState();
+  const [loading, setLoading] = useState(true);
+  const [display, setDisplay] = useState("none");
 
   useEffect(() => {
     axios({
@@ -20,6 +21,8 @@ const Reports = () => {
     })
       .then(function(response) {
         setReports(response.data);
+        setLoading(false);
+        setDisplay("");
         console.log(response.data);
       })
       .catch(function(error) {
@@ -30,8 +33,10 @@ const Reports = () => {
   let user = JSON.parse(localStorage.getItem("user"));
 
   let handleAdd = report => {
+    let newReport = { ...report };
+    newReport._id = Math.random();
     let reportsNew = [...reports];
-    reportsNew.push(report);
+    reportsNew.push(newReport);
     setReports(reportsNew);
   };
 
@@ -42,13 +47,14 @@ const Reports = () => {
     setReports(reportsNew);
   };
 
-  let handleDelete = id => {
-    console.log(id);
+  let handleDelete = report => {
+    report.user = JSON.parse(localStorage.getItem("user"));
+
     axios.delete("http://localhost:5000/api/reports", {
-      data: { id: id }
+      data: { report: report }
     });
-    let newArray = reports.filter(function(report) {
-      return report._id !== id;
+    let newArray = reports.filter(function(rep) {
+      return rep._id !== report._id;
     });
     setReports(newArray);
   };
@@ -101,6 +107,11 @@ const Reports = () => {
       })
     : [];
 
+  let override = css`
+    display: block;
+    margin: 0 auto;
+  `;
+
   return (
     <div>
       <Head />
@@ -119,12 +130,19 @@ const Reports = () => {
                 onClick={() => handleActiveTab("Confirmed")}
               />
             </Menu>{" "}
-            <div style={{ margin: "20px", right: 0 }}>
+            <ClipLoader
+              css={override}
+              sizeUnit={"px"}
+              size={150}
+              color={"#123abc"}
+              loading={loading}
+            />
+            <div style={{ margin: "20px", right: 0, display: display }}>
               {user.role === "Developer" ? (
                 <ReportInput add={handleAdd} />
               ) : null}
             </div>
-            <Table sortable>
+            <Table sortable style={{ display: display }}>
               <Table.Header className="mobile hidden">
                 <Table.Row>
                   {user.role === "PM" ? (
@@ -182,7 +200,7 @@ const Reports = () => {
               </Table.Header>
               <Table.Body>
                 {filtered.map(report => (
-                  <Table.Row key={report._id} textAlign="right">
+                  <Table.Row key={String(report._id)} textAlign="right">
                     {user.role === "PM" ? (
                       <Table.Cell textAlign="center">
                         {report.usersname}
@@ -218,7 +236,7 @@ const Reports = () => {
                       user.role === "Developer" ? (
                         <Table.Cell
                           textAlign="center"
-                          onClick={() => handleDelete(report._id)}
+                          onClick={() => handleDelete(report)}
                         >
                           <Icon
                             name="trash"

@@ -11,11 +11,6 @@ const ReportInput = ({ report, update, add }) => {
   let [spent, setSpent] = useState("");
   let [modalOpen, setModalOpen] = useState(false);
 
-  const options = [
-    { key: "m", text: "PM", value: "PM" },
-    { key: "f", text: "Developer", value: "Developer" }
-  ];
-
   useEffect(() => {
     if (report) {
       setName(report.name);
@@ -55,7 +50,8 @@ const ReportInput = ({ report, update, add }) => {
     user: Joi.string()
       .min(3)
       .required(),
-    confirmed: Joi.boolean().required()
+    confirmed: Joi.boolean().required(),
+    requested: Joi.boolean().required()
   });
 
   const result = schema.validate(data);

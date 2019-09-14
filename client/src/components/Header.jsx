@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import {
   Container,
-  Card,
-  Image,
   Menu,
-  Segment,
   Sidebar,
-  Dropdown,
   Icon
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
@@ -22,7 +18,7 @@ const Head = () => {
       <Menu fixed="top" inverted className="layout">
         <Container className="d-flex align-center justify-between">
           <div className="d-flex">
-            <Link className="item" to="">
+            <Link className="item" to="/reports">
               Daily Report
             </Link>
             {user && user.role === "Admin" ? (

@@ -13,13 +13,12 @@ var pool = new Pool({
 
 pool.connect();
 
-
 router.put("/", (req, res) => {
-  console.log(req.body.username);
+  console.log(req.body);
   pool
     .query(`SELECT * FROM users WHERE username = '${req.body.username}'`)
-    .then(result => (result.rows[0] &&
-      result.rows[0].password )=== req.body.password
+    .then(result =>
+      (result.rows[0] && result.rows[0].password) === req.body.password
         ? res.json(result.rows[0])
         : res.status(400).send("wrong username or password")
     );
