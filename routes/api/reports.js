@@ -79,8 +79,8 @@ router.delete("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  let userid = JSON.parse(req.body.user);
-  console.log(req.body);
+  let userid = req.body.user;
+
   const schema = Joi.object({
     name: Joi.string()
       .min(3)
@@ -100,10 +100,10 @@ router.post("/", (req, res) => {
   });
 
   let data = {
-    name: req.body.name,
-    estimation: req.body.estimation,
-    spent: req.body.spent,
-    description: req.body.description,
+    name: req.body.data.name,
+    estimation: req.body.data.estimation,
+    spent: req.body.data.spent,
+    description: req.body.data.description,
     userid: userid,
     confirmed: false,
     requested: false
@@ -119,22 +119,21 @@ router.post("/", (req, res) => {
       .query(
         `INSERT INTO reports values('${uuidv1().toString()}', '${
           userid._id
-        }', '${req.body.name}','${req.body.description}', '${
-          req.body.estimation
-        }', '${req.body.spent}', '${false}', '${JSON.parse(req.body.user)
-          .firstname +
+        }', '${req.body.data.name}','${req.body.data.description}', '${
+          req.body.data.estimation
+        }', '${req.body.data.spent}', '${false}', '${req.body.user.firstname +
           " " +
-          JSON.parse(req.body.user).lastname}', '${req.body.requested}')`
+          req.body.user.lastname}', '${req.body.data.requested}')`
       )
       .then(respond => {
         if (respond) {
           pool.query(
             `INSERT INTO notifications values('${uuidv1().toString()}', '${
               userid._id
-            }', '${JSON.parse(req.body.user).firstname +
+            }', '${req.body.user.firstname +
               " " +
-              JSON.parse(req.body.user).lastname}', 'created a report', '${
-              req.body.name
+              req.body.user.lastname}', 'created a report', '${
+              req.body.data.name
             }')`
           );
         } else {

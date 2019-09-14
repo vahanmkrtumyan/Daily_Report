@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Button, Modal, Icon, Form } from "semantic-ui-react";
 import axios from "axios";
 import io from "socket.io-client";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
 const Joi = require("@hapi/joi");
+
 
 const ReportInput = ({ report, update, add }) => {
   let [name, setName] = useState("");
@@ -81,7 +84,7 @@ const ReportInput = ({ report, update, add }) => {
         axios({
           method: "post",
           url: "http://localhost:5000/api/reports",
-          data: data,
+          data: {data, user},
           crossDomain: true
         })
           .then(function(response) {
@@ -95,16 +98,20 @@ const ReportInput = ({ report, update, add }) => {
       }
     }
 
-    handleEmit();
+    () => handleEmit();
   };
 
   let socket = io.connect("http://localhost:5000");
 
   let handleEmit = () => {
-    socket.emit("users", {
+    socket.emit("report", {
       user: data
     });
   };
+
+  socket.on("report", function(data) {
+    alert("socket");
+  });
 
   return (
     <Modal

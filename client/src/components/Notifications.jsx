@@ -25,8 +25,6 @@ const Notifications = props => {
 
   let handleDelete = id => {
 
-    //let newArray = id === "all" ? Array.from(notifications, x => x._id) : [id];
-
     axios.delete("http://localhost:5000/api/notifications", {
       data: { id, user: localStorage.getItem("user") }
     });

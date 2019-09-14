@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("./pool");
 
+
 // var pool = new Pool({
 //     host: "postgres.cheevgkmqkgg.us-east-2.rds.amazonaws.com",
 //     user: "postgres",
