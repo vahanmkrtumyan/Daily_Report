@@ -13,7 +13,6 @@ const pool = require("./pool");
 // });
 
 router.put("/", (req, res) => {
-  console.log(req.body);
 
   let type = req.body.data.confirmed
     ? "confirmed a report"
@@ -43,7 +42,6 @@ router.put("/", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-  console.log(JSON.parse(req.query.user)._id);
 
   if (
     JSON.parse(req.query.user).role === "Admin" ||
@@ -62,7 +60,6 @@ router.get("/", (req, res) => {
 });
 
 router.delete("/", (req, res) => {
-  console.log(req.body);
   pool
     .query(`DELETE FROM reports WHERE _id = '${req.body.report._id}'`)
     .then(results =>

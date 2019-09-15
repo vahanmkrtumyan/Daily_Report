@@ -6,7 +6,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 const Joi = require("@hapi/joi");
 
-
 const ReportInput = ({ report, update, add }) => {
   let [name, setName] = useState("");
   let [description, setDescription] = useState("");
@@ -74,6 +73,7 @@ const ReportInput = ({ report, update, add }) => {
           console.log(error);
         });
       update(data);
+      handleEmit("created");
       setModalOpen(false);
     } else {
       if (result.error) {
@@ -84,7 +84,7 @@ const ReportInput = ({ report, update, add }) => {
         axios({
           method: "post",
           url: "http://localhost:5000/api/reports",
-          data: {data, user},
+          data: { data, user },
           crossDomain: true
         })
           .then(function(response) {
@@ -94,24 +94,23 @@ const ReportInput = ({ report, update, add }) => {
             console.log(error);
           });
         add(data);
+        handleEmit("updated");
         setModalOpen(false);
       }
     }
-
-    () => handleEmit();
   };
 
   let socket = io.connect("http://localhost:5000");
 
-  let handleEmit = () => {
-    socket.emit("report", {
-      user: data
-    });
-  };
-
   socket.on("report", function(data) {
-    alert("socket");
+    console.log(data);
+    socket.emit("my other event", { my: "data" });
   });
+
+  let handleEmit = type => {
+    socket.emit("report", { type, user, data });
+    console.log;
+  };
 
   return (
     <Modal

@@ -6,6 +6,7 @@ import axios from "axios";
 import ReportInput from "./Modals/ReportInput";
 import Head from "./Header";
 
+
 const Reports = props => {
   const [activeItem, setActiveitem] = useState("Not confirmed");
   const [reports, setReports] = useState();
@@ -113,6 +114,9 @@ const Reports = props => {
     margin: 0 auto;
   `;
 
+
+  
+
   return (
     <div>
       <Head />
@@ -201,7 +205,7 @@ const Reports = props => {
               </Table.Header>
               <Table.Body>
                 {filtered.map(report => (
-                  <Table.Row key={String(report._id)} textAlign="right">
+                  <Table.Row className={report.requested ? 'requested': '' } key={String(report._id)}>
                     {user.role === "PM" ? (
                       <Table.Cell textAlign="center">
                         {report.usersname}

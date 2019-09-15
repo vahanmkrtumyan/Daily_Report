@@ -1,4 +1,4 @@
-const express = require("express");
+//const express = require("express");
 const { Client } = require("pg");
 const bodyParser = require("body-parser");
 const items = require("./routes/api/items");
@@ -7,7 +7,11 @@ const reports = require("./routes/api/reports");
 const notifications = require("./routes/api/notifications");
 const socket = require("socket.io");
 
-const app = express();
+var app = require("express")();
+var server = require("http").Server(app);
+var io = require("socket.io")(server);
+
+server.listen(5000);
 
 var cors = require("cors");
 
@@ -30,17 +34,40 @@ app.use("/api/login", login);
 app.use("/api/reports", reports);
 app.use("/api/notifications", notifications);
 
-const port = process.env.PORT || 5000;
+// const port = process.env.PORT || 5000;
 
-let server = app.listen(port, () => `Server running on port ${port}`);
+// let server = app.listen(port, () => `Server running on port ${port}`);
 
-const io = socket(server);
+// const io = socket.listen(server);
 
-
+let users = [];
+let connections = [];
 
 io.on("connection", function(socket) {
- // console.log("made socket connection", socket.id);
+  let user = socket.handshake.query._id
+    ? { user: socket.handshake.query, id: socket.id }
+    : null;
+
+  //console.log(user);
+  let newusers = users.filter(function(e) {
+    return e !== null;
+  });
+
+  if (user) {
+    if (newusers.filter(e => e.user._id === user.user._id).length === 0) {
+      users.push(user);
+    }
+  }
+
+  // console.log(newusers);
+
   socket.on("report", function(data) {
-    io.sockets.emit("report", data);
+    if (data.user.role === "Developer") {
+      socket.emit("report", data);
+      console.log("devel");
+    }
+    console.log("adsdf");
+    // console.log("report", data);
+    socket.emit("report", data);
   });
 });

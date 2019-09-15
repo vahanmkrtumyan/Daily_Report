@@ -62,7 +62,6 @@ const Head = () => {
         visible={visible}
       >
         <div style={{ maxWidth: "90%", margin: "auto", paddingTop: "5px" }}>
-          
           <Notifications count={handleCount} />
         </div>
       </Sidebar>

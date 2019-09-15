@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, Button } from "semantic-ui-react";
 import axios from "axios";
+import io from "socket.io-client";
 
 const Notifications = props => {
   const [notifications, setNotifications] = useState([]);
@@ -23,8 +24,15 @@ const Notifications = props => {
       });
   }, []);
 
-  let handleDelete = id => {
+  let user = JSON.parse(localStorage.getItem("user"));
 
+  let socket = io.connect("http://localhost:5000", { query: user });
+
+  socket.on("report", function(data) {
+    console.log(data);
+  });
+
+  let handleDelete = id => {
     axios.delete("http://localhost:5000/api/notifications", {
       data: { id, user: localStorage.getItem("user") }
     });
