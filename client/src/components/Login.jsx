@@ -36,10 +36,7 @@ const Login = props => {
     })
       .then(function(response) {
         localStorage.setItem("user", JSON.stringify(response.data));
-        console.log(response.data.role);
-        if (response.data) {
-          props.history.push("/Reports");
-        }
+        props.history.push("/Reports");
       })
       .catch(function(error) {
         document.getElementById("login").innerHTML +=
