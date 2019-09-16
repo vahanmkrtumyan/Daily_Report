@@ -7,7 +7,7 @@ import ReportInput from "./Modals/ReportInput";
 import Head from "./Header";
 
 
-const Reports = props => {
+const Reports = () => {
   const [activeItem, setActiveitem] = useState("Not confirmed");
   const [reports, setReports] = useState();
   const [loading, setLoading] = useState(true);

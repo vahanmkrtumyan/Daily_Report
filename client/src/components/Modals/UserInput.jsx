@@ -68,7 +68,7 @@ const UserInput = ({ user, add, update }) => {
       data._id = user._id;
       axios({
         method: "put",
-        url: "http://localhost:5000/api/items/users",
+        url: "http://localhost:5000/api/users",
         data: data,
         crossDomain: true
       })
@@ -87,7 +87,7 @@ const UserInput = ({ user, add, update }) => {
         add(data);
         axios({
           method: "post",
-          url: "http://localhost:5000/api/items/users",
+          url: "http://localhost:5000/api/users",
           data: data,
           crossDomain: true
         })

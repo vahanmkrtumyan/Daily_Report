@@ -12,10 +12,8 @@ const Joi = require("@hapi/joi");
 //   database: "postgres"
 // });
 
-
-
-router.put("/users", (req, res) => {
-  console.log(req.body);
+router.put("/", (req, res) => {
+  console.log(req.body.id);
 
   pool
     .query(
@@ -24,22 +22,20 @@ router.put("/users", (req, res) => {
     .then(results => res.json(results.rows));
 });
 
-router.get("/users", (req, res) => {
+router.get("/", (req, res) => {
   console.log(JSON.parse(req.query.user));
   JSON.parse(req.query.user).role === "Admin"
-    ? pool
-        .query("select * from users")
-        .then(results => res.json(results.rows))
+    ? pool.query("select * from users").then(results => res.json(results.rows))
     : res.send([]);
 });
 
-router.delete("/users", (req, res) => {
+router.delete("/", (req, res) => {
   pool
     .query(`DELETE FROM users WHERE _id = '${req.body.id}'`)
     .then(results => res.json(results.rows));
 });
 
-router.post("/users", (req, res) => {
+router.post("/", (req, res) => {
   const schema = Joi.object({
     firstname: Joi.string()
       .min(3)

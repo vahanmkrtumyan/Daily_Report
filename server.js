@@ -1,7 +1,7 @@
 //const express = require("express");
 const { Client } = require("pg");
 const bodyParser = require("body-parser");
-const items = require("./routes/api/items");
+const users = require("./routes/api/users");
 const login = require("./routes/api/login");
 const reports = require("./routes/api/reports");
 const notifications = require("./routes/api/notifications");
@@ -29,7 +29,7 @@ app.use(cors());
 
 //const connectionString = "postgressql://postgres:1990@localhost:5432/postgres";
 
-app.use("/api/items", items);
+app.use("/api/users", users);
 app.use("/api/login", login);
 app.use("/api/reports", reports);
 app.use("/api/notifications", notifications);
@@ -40,7 +40,7 @@ app.use("/api/notifications", notifications);
 
 // const io = socket.listen(server);
 
-let users = [];
+let userss = [];
 let connections = [];
 
 io.on("connection", function(socket) {
@@ -49,13 +49,13 @@ io.on("connection", function(socket) {
     : null;
 
   //console.log(user);
-  let newusers = users.filter(function(e) {
+  let newusers = userss.filter(function(e) {
     return e !== null;
   });
 
   if (user) {
     if (newusers.filter(e => e.user._id === user.user._id).length === 0) {
-      users.push(user);
+      userss.push(user);
     }
   }
 

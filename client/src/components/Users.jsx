@@ -18,7 +18,7 @@ const Users = () => {
   useEffect(() => {
     axios({
       method: "get",
-      url: "http://localhost:5000/api/items/users",
+      url: "http://localhost:5000/api/users",
       crossDomain: true,
       params: { user: localStorage.getItem("user") }
     })
@@ -52,16 +52,10 @@ const Users = () => {
     setDirection(direction === "ascending" ? "descending" : "ascending");
   };
 
-  // let filtered = users
-  //   ? users.filter(function(user) {
-  //       return (
-  //         user.firstname.toLowerCase().indexOf(searchUser.toLowerCase()) !== -1
-  //       );
-  //     })
-  //   : [];
+  
 
   let handleDelete = id => {
-    axios.delete("http://localhost:5000/api/items/users", {
+    axios.delete("http://localhost:5000/api/users", {
       data: { id: id }
     });
     let newArray = users.filter(function(user) {
