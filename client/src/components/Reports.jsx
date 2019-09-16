@@ -5,7 +5,9 @@ import { css } from "@emotion/core";
 import axios from "axios";
 import ReportInput from "./Modals/ReportInput";
 import Head from "./Header";
-
+import io from "socket.io-client";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
 
 const Reports = () => {
   const [activeItem, setActiveitem] = useState("Not confirmed");
@@ -32,6 +34,32 @@ const Reports = () => {
   }, []);
 
   let user = JSON.parse(localStorage.getItem("user"));
+
+  let socket = io.connect("http://localhost:5000");
+
+  socket.on("report", function(data) {
+    notify(data);
+  });
+
+  let notify = data => {
+    console.log(data);
+    toast.info(
+      data.user.firstname +
+        " " +
+        data.user.lastname +
+        " " +
+        data.type +
+        " " +
+        "task" +
+        " " +
+        data.data.name
+    );
+  };
+
+  let handleEmit = (data, type) => {
+    socket.emit("report", { type, user, data });
+    console.log("emit");
+  };
 
   let handleAdd = report => {
     let newReport = { ...report };
@@ -114,12 +142,10 @@ const Reports = () => {
     margin: 0 auto;
   `;
 
-
-  
-
   return (
     <div>
       <Head />
+      <ToastContainer />
       <div style={{ paddingTop: "75px" }}>
         <div style={{ textAlign: "right" }}>
           <Container>
@@ -144,7 +170,7 @@ const Reports = () => {
             />
             <div style={{ margin: "20px", right: 0, display: display }}>
               {user.role === "Developer" ? (
-                <ReportInput add={handleAdd} />
+                <ReportInput add={handleAdd} notify={notify} />
               ) : null}
             </div>
             <Table sortable style={{ display: display }}>
@@ -205,7 +231,10 @@ const Reports = () => {
               </Table.Header>
               <Table.Body>
                 {filtered.map(report => (
-                  <Table.Row className={report.requested ? 'requested': '' } key={String(report._id)}>
+                  <Table.Row
+                    className={report.requested ? "requested" : ""}
+                    key={String(report._id)}
+                  >
                     {user.role === "PM" ? (
                       <Table.Cell textAlign="center">
                         {report.usersname}
@@ -222,12 +251,19 @@ const Reports = () => {
                     {activeItem === "Not confirmed" ? (
                       user.role === "Developer" ? (
                         <Table.Cell textAlign="center">
-                          <ReportInput report={report} update={handleUpdate} />
+                          <ReportInput
+                            report={report}
+                            update={handleUpdate}
+                            notify={notify}
+                          />
                         </Table.Cell>
                       ) : (
                         <Table.Cell
                           textAlign="center"
-                          onClick={() => handleConfirm(report)}
+                          onClick={() => {
+                            handleConfirm(report),
+                              handleEmit(report, "confirmed");
+                          }}
                         >
                           <Icon
                             name="check"
@@ -241,7 +277,9 @@ const Reports = () => {
                       user.role === "Developer" ? (
                         <Table.Cell
                           textAlign="center"
-                          onClick={() => handleDelete(report)}
+                          onClick={() => {
+                            handleDelete(report), handleEmit(report, "deleted");
+                          }}
                         >
                           <Icon
                             name="trash"
@@ -252,7 +290,10 @@ const Reports = () => {
                       ) : (
                         <Table.Cell
                           textAlign="center"
-                          onClick={() => handleRequest(report)}
+                          onClick={() => {
+                            handleRequest(report),
+                              handleEmit(report, "requested");
+                          }}
                         >
                           <Icon
                             name="redo"

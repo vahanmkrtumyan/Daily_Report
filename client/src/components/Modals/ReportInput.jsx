@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Button, Modal, Icon, Form } from "semantic-ui-react";
 import axios from "axios";
 import io from "socket.io-client";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.min.css";
+
 const Joi = require("@hapi/joi");
 
-const ReportInput = ({ report, update, add }) => {
+const ReportInput = ({ report, update, add, ...props }) => {
   let [name, setName] = useState("");
   let [description, setDescription] = useState("");
   let [estimation, setEstimation] = useState("");
@@ -72,8 +71,8 @@ const ReportInput = ({ report, update, add }) => {
         .catch(function(error) {
           console.log(error);
         });
+      handleEmit("updated");
       update(data);
-      handleEmit("created");
       setModalOpen(false);
     } else {
       if (result.error) {
@@ -94,7 +93,7 @@ const ReportInput = ({ report, update, add }) => {
             console.log(error);
           });
         add(data);
-        handleEmit("updated");
+        handleEmit("created");
         setModalOpen(false);
       }
     }
@@ -103,8 +102,7 @@ const ReportInput = ({ report, update, add }) => {
   let socket = io.connect("http://localhost:5000");
 
   socket.on("report", function(data) {
-    console.log(data);
-    socket.emit("my other event", { my: "data" });
+    props.notify(data);
   });
 
   let handleEmit = type => {

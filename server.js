@@ -48,7 +48,6 @@ io.on("connection", function(socket) {
     ? { user: socket.handshake.query, id: socket.id }
     : null;
 
-  //console.log(user);
   let newusers = userss.filter(function(e) {
     return e !== null;
   });
@@ -58,16 +57,21 @@ io.on("connection", function(socket) {
       userss.push(user);
     }
   }
+  userss.push(user);
 
   // console.log(newusers);
 
   socket.on("report", function(data) {
     if (data.user.role === "Developer") {
+      console.log("users", userss);
+      // let newusers = userss.filter(function(e) {
+      //   return e !== null;
+      // });
       socket.emit("report", data);
       console.log("devel");
+    } else {
+      socket.emit("report", data);
+      console.log("admin or pm");
     }
-    console.log("adsdf");
-    // console.log("report", data);
-    socket.emit("report", data);
   });
 });
